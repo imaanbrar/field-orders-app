@@ -1,0 +1,64 @@
+<div id="comments">
+  <div class="widget-container">
+    <dx-data-grid #commentsGrid
+                  height="100%"
+                  [dataSource]="dataSource"
+                  [showBorders]="true"
+                  [columnAutoWidth]="true"
+                  [allowColumnReordering]="true"
+                  [allowColumnResizing]="true"
+                  (onEditorPrepared)="onEditorPrepared($event)"
+                  (onToolbarPreparing)="onToolbarPreparing($event)"
+                  (onDataErrorOccurred)="onDataErrorOccurred($event)"
+                  (onRowInserting)="onSaving()"
+                  (onRowInserted)="onSaved($event)"
+                  (onRowUpdating)="onSaving()"
+                  (onRowUpdated)="onSaved($event)"
+                  (onRowRemoving)="onSaving()"
+                  (onRowRemoved)="onSaved($event)"
+                  (onInitNewRow)="newRowEvent($event)">
+      <dxo-export [enabled]="true" [fileName]="exportFileName"></dxo-export>
+      <dxo-search-panel [visible]="!(screen.XSmall | async)"
+                        [width]="240"
+                        placeholder="Search..."></dxo-search-panel>
+      <dxo-column-fixing [enabled]="screen.isMobile | async"></dxo-column-fixing>
+      <dxo-editing [mode]="(screen.isDesktop | async) ? 'batch' : 'popup'"
+                   [allowUpdating]="!order.readOnly"
+                   [allowAdding]="!order.readOnly"
+                   [allowDeleting]="!order.readOnly"
+                   [useIcons]="true"
+                   [popup]="{
+                    onShown: onPopupShown
+                   }">
+        <dxo-popup class="field-note-popup"
+                   height="auto"
+                   title="Note"
+                   [showTitle]="true"
+                   [showCloseButton]="true"
+                   [closeOnOutsideClick]="true"
+                   [fullScreen]="screen.XSmall | async"
+                   [position]="{my: 'center', at: 'center', of: 'window'}">
+        </dxo-popup>
+        <dxo-form [showColonAfterLabel]="true"
+                  [colCount]="1"
+                  [showValidationSummary]="true"
+                  [screenByWidth]="screen.screenByWidth"
+                  [labelLocation]="(screen.XSmall | async) ? 'top' : 'left'">
+          <dxi-item itemType="group">
+            <dxi-item name="commentDate"></dxi-item>
+            <dxi-item name="comment"></dxi-item>
+          </dxi-item>
+        </dxo-form>
+      </dxo-editing>
+      <dxo-paging [pageSize]="10"></dxo-paging>
+      <dxi-column dataField="commentDate" name="commentDate" caption="Date" dataType="date" [width]="125">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+      </dxi-column>
+      <dxi-column dataField="comment" name="comment" caption="Note/ Comment" [editorOptions]="{ spellcheck: true }">
+        <dxo-form-item name="comment" editorType="dxTextArea"></dxo-form-item>
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="stringLength" max="500" message="Please enter maximum of 500 characters"></dxi-validation-rule>
+      </dxi-column>
+    </dx-data-grid>
+  </div>
+</div>

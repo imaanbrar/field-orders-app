@@ -1,0 +1,153 @@
+<dx-data-grid #orderGrid
+              height="100%"
+              [dataSource]="dataSource"
+              [showBorders]="true"
+              [hoverStateEnabled]="true"
+              [columnAutoWidth]="true"
+              [allowColumnReordering]="true"
+              [allowColumnResizing]="true"
+              [showColumnHeaders]="screen.isDesktop | async"
+              (onEditorPreparing)="gridOnEditorPreparing($event)"
+              hint="Click to open Order Details"
+              (onInitNewRow)="gridOnInitNewRow($event)"
+              (onRowInserted)="gridOnRowInserted($event)"
+              (onRowClick)="gridOnRowClick($event)"
+              (onToolbarPreparing)="gridOnToolbarPreparing($event)"
+              rowTemplate="rowTemplate">
+  <dxo-search-panel [visible]="true"
+                    width="350"
+                    placeholder="Search..."></dxo-search-panel>
+  <dxo-paging [pageSize]="12"></dxo-paging>
+  <dxo-sorting mode="single"></dxo-sorting>
+  <dxo-scrolling useNative="false"></dxo-scrolling>
+  <dxo-filter-panel [visible]="true"></dxo-filter-panel>
+  <dxo-filter-row [visible]="screen.isDesktop | async"></dxo-filter-row>
+  <dxo-header-filter [visible]="true"></dxo-header-filter>
+  <dxo-export [enabled]="true" [fileName]="exportFileName" [allowExportSelectedData]="true"></dxo-export>
+  <dxo-editing mode="popup"
+               [allowAdding]="!readOnly"
+               [useIcons]="true">
+    <dxo-popup title="Order Info"
+               [fullScreen]="screen.XSmall | async"
+               [showTitle]="true"
+               [width]="500"
+               height="auto">
+    </dxo-popup>
+    <dxo-form [labelLocation]="(screen.isMobile | async) ? 'top' : 'left'"
+              [colCount]="1">
+      <dxi-item name="name" [colSpan]="1"></dxi-item>
+      <dxi-item name="companyId" [colSpan]="1"></dxi-item>
+      <dxi-item name="projectId" [colSpan]="1"></dxi-item>
+      <dxi-item name="statusId" [colSpan]="1"></dxi-item>
+    </dxo-form>
+  </dxo-editing>
+  <dxi-column name="number" dataField="number" [caption]="captions.number" dataType="string">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxi-validation-rule type="custom"
+                         [validationCallback]="columnNumberValidationCallback">
+    </dxi-validation-rule>
+    <dxi-validation-rule type="stringLength" max="50" message="Please enter maximum of 50 characters"></dxi-validation-rule>
+  </dxi-column>
+  <dxi-column name="name" dataField="name" [caption]="captions.name" dataType="string">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxi-validation-rule type="stringLength" max="255" message="Please enter maximum of 255 characters"></dxi-validation-rule>
+  </dxi-column>
+  <dxi-column name="companyId" dataField="companyId" caption="Client" dataType="string" [filterValue]="defaultCompanyId" [setCellValue]="columnCompanyIdSetCellValue">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxo-lookup [dataSource]="companies"
+                valueExpr="value"
+                displayExpr="text">
+    </dxo-lookup>
+  </dxi-column>
+  <dxi-column name="projectId" dataField="projectId" caption="Project" dataType="string" [filterValue]="defaultProjectId">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxi-validation-rule type="custom"
+                         [validationCallback]="columnProjectIdValidationCallback"></dxi-validation-rule>
+    <dxo-lookup [dataSource]="columnProjectIdDataSource"
+                valueExpr="value"
+                displayExpr="text">
+    </dxo-lookup>
+  </dxi-column>
+  <dxi-column name="statusId" dataField="statusId" caption="Status" dataType="string" [filterValue]="defaultStatusId">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxo-lookup [dataSource]="statuses"
+                valueExpr="value"
+                displayExpr="text">
+    </dxo-lookup>
+  </dxi-column>
+
+  <tbody *dxTemplate="let row of 'rowTemplate'">
+  <ng-container *ngIf="(screen.isDesktop | async); else mobileTemplate">
+    <tr class="dx-row dx-data-row dx-column-lines">
+      <td>{{row.data.number}}</td>
+      <td>{{row.data.name}}</td>
+      <td>{{resolveMap(companyMap, row.data.companyId)}}</td>
+      <td>{{resolveMap(projectMap, row.data.projectId)}}</td>
+      <td>{{resolveMap(statusMap, row.data.statusId)}}</td>
+    </tr>
+  </ng-container>
+  <ng-template #mobileTemplate>
+    <tr class="dx-row mobile-row">
+      <td colspan="5">
+        <dx-box class="master-detail-form"
+                direction="row"
+                width="100%"
+                height="auto">
+          <dxi-item [ratio]="1"
+                    [shrink]="1"
+                    baseSize="100%">
+            <dx-box class="master-detail-info" direction="col" height="auto">
+              <dxi-item [ratio]="1" baseSize="auto" width="100%">
+                <dx-box class="data-field order-number" width="100%" height="auto" direction="row">
+                  <dxi-item class="data-field-label" baseSize="auto" alignment="center"><label></label></dxi-item>
+                  <dxi-item class="data-field-value" baseSize="auto">{{row.data.number}}</dxi-item>
+                </dx-box>
+                <dx-box class="data-field order-name-and-status" direction="row" height="auto" width="100%">
+                  <dxi-item baseSize="auto" [ratio]="0">
+                    <dx-box class="data-field order-name" width="100%" height="auto" direction="row">
+                      <dxi-item class="data-field-label" baseSize="auto"><label></label></dxi-item>
+                      <dxi-item class="data-field-value" baseSize="auto">{{row.data.name}}</dxi-item>
+                    </dx-box>
+                  </dxi-item>
+                  <dxi-item class="{{'data-field order-status ' + statusColor(row.data.statusId)}}"
+                            baseSize="auto"
+                            [ratio]="0">
+                    {{resolveMap(statusMap, row.data.statusId)}}
+                  </dxi-item>
+                </dx-box>
+                <dx-box class="data-field order-company" width="100%" height="auto" direction="row">
+                  <dxi-item class="data-field-label" baseSize="auto" alignment="center"><label></label></dxi-item>
+                  <dxi-item class="data-field-value"
+                            baseSize="auto">
+                    {{resolveMap(companyMap, row.data.companyId)}}
+                  </dxi-item>
+                </dx-box>
+                <dx-box class="data-field order-project" width="100%" height="auto" direction="row">
+                  <dxi-item class="data-field-label" baseSize="auto" alignment="center"><label></label></dxi-item>
+                  <dxi-item class="data-field-value"
+                            baseSize="auto">
+                    {{resolveMap(projectMap, row.data.projectId)}}
+                  </dxi-item>
+                </dx-box>
+              </dxi-item>
+            </dx-box>
+          </dxi-item>
+          <dxi-item class="master-detail-buttons"
+                    [ratio]="0"
+                    [shrink]="0"
+                    baseSize="auto"
+                    [visible]="screen.Small | async">
+            <dx-button text="Details"
+                       type="default"
+                       stylingMode="outlined"
+                       [useSubmitBehavior]="false"
+                       (onClick)="rowOnDetailsClicked(row)">
+            </dx-button>
+          </dxi-item>
+        </dx-box>
+      </td>
+    </tr>
+  </ng-template>
+  </tbody>
+
+</dx-data-grid>

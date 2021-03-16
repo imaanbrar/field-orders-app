@@ -153,5 +153,10 @@
       }
     }
   },
-  "defaultProject": "field-orders-app"
+  "defaultProject": "field-orders-app",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

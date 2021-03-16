@@ -6,6 +6,12 @@
     "paths": {
       "jszip": [
         "node_modules/jszip/dist/jszip.min.js"
+      ],
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@orders/*": [
+        "src/app/orders/*"
       ]
     }
   },

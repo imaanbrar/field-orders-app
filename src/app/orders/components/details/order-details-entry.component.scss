@@ -1,0 +1,57 @@
+$theme-color: #FF5722;
+
+$text-color-default: #333333;
+$text-color-aux: #8899a8;
+$text-color-disabled: #a8a8a8;
+$text-color-readonly: #8899a8;
+$text-color-label: #8899a8;
+$text-color-type-default: #ee4729;
+
+$bg-color-main: #353839;
+$bg-color-readonly: #f7f7f7;
+
+$border-color-outline: #afb6bb;
+$border-color-default: #dee1e3;
+
+:host {
+  display: block;
+}
+
+.break-outer-scrollview {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  min-height: 0;
+}
+
+::ng-deep .dx-toast.notification-service-toast {
+
+  .dx-toast-icon {
+    width: 1em;
+    height: 1em;
+  }
+
+  > .dx-toast-wrapper {
+    z-index: 1499!important; /* other overlays (popups etc.) start at z-index 1500 */
+  }
+}
+
+::ng-deep .dx-toast.notification-service-toast.simple-custom-toast {
+
+  .dx-toast-custom.dx-toast-content {
+    display: flex;
+    flex-direction: row-reverse;
+    font-weight: 400;
+    color: #333;
+    border: 1px solid $border-color-outline;
+    background-color: white;
+
+    i.fas {
+      line-height: 1em;
+      height: 1em;
+      width: 1em;
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { CanActivate, Router, ActivatedRouteSnapshot, CanDeactivate, RouterStateSnapshot } from '@angular/router';
+import { Observable, Subject } from 'rxjs';
 
 const defaultPath = '/';
 const defaultUser = {
@@ -118,6 +119,7 @@ export class AuthService {
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
+  private subject = new Subject<any>();
   constructor(private router: Router, private authService: AuthService) { }
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
@@ -145,4 +147,36 @@ export class AuthGuardService implements CanActivate {
 
     return isLoggedIn || isAuthForm;
   }
+
+  canDeactivate(
+    component: CanComponentDeactivate,
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | boolean {
+    var result = component.confirm();
+    result.subscribe(data => {
+      if (data === false) {
+        this.subject.next(true);
+      }
+    })
+    return result;
+  }
+
+  getSubject(): Observable<any> {
+    return this.subject.asObservable();
+  }
+}
+
+export interface CanComponentDeactivate {
+  confirm(): Observable<boolean>;
+}
+
+@Injectable()
+export class ConfirmationGuard implements CanDeactivate<CanComponentDeactivate> {
+  canDeactivate(
+    component: CanComponentDeactivate,
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable<boolean> | boolean {
+    return component.confirm();
+  }
+
 }

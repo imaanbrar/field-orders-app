@@ -1,0 +1,37 @@
+<dx-list #list
+         [dataSource]="orders"
+         [useNativeScrolling]="false"
+         showScrollbar="onScroll"
+         selectionMode="none"
+         hint="Click to open order details"
+         [focusStateEnabled]="false"
+         (onItemClick)="itemClicked($event)">
+  <div *dxTemplate="let item of 'item'">
+    <ng-container *ngIf="(screen.isDesktop | async); else mobileTemplate">
+      <div class="contentLeft">
+        <div class="item" [title]="item.title">
+          <span>{{item.number}} - {{item.name}}</span>
+          <span title="Status" [class]="item.statusColor">{{item.status}}</span>
+        </div>
+        <div class="project" title="Project Name (Company Name)">{{item.projectName}} ({{item.companyName}})</div>
+      </div>
+      <div class="contentRight">
+        <div id="detailsButton">
+          <dx-button type="default"
+                     stylingMode="outlined"
+                     text="Details">
+          </dx-button>
+        </div>
+      </div>
+      <div class="clearFloat"></div>
+    </ng-container>
+    <ng-template #mobileTemplate>
+      <div class="item">
+        <span>{{item.number}}</span>
+        <span title="Status" [class]="item.statusColor">{{item.status}}</span>
+      </div>
+      <div class="project">{{item.name}}</div>
+      <div class="project">{{item.projectName}}</div>
+    </ng-template>
+  </div>
+</dx-list>

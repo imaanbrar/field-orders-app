@@ -1,0 +1,173 @@
+<div id="sos">
+  <div class="widget-container">
+    <dx-data-grid #dataGrid
+                  height="100%"
+                  [dataSource]="dataSource"
+                  [showBorders]="true"
+                  [columnAutoWidth]="true"
+                  [allowColumnReordering]="true"
+                  [focusedRowEnabled]="true"
+                  [allowColumnResizing]="true"
+                  [wordWrapEnabled]="true"
+                  (onDataErrorOccurred)="onDataErrorOccurred($event)"
+                  (onInitNewRow)="newRowEvent($event)"
+                  (onRowClick)="onRowClick($event)"
+                  (onRowPrepared)="onRowPrepared($event)"
+                  (onToolbarPreparing)="onToolbarPreparing($event)"
+                  (onRowInserting)="onSaving($event)"
+                  (onRowInserted)="onRowInserted($event)"
+                  (onRowUpdating)="onRowUpdating($event)"
+                  (onRowUpdated)="onSaved($event)"
+                  (onRowRemoving)="removingRowEvent($event)"
+                  (onRowRemoved)="onSaved($event)"
+                  (onRowValidating)="onRowValidating($event)">
+      <dxo-export [enabled]="true" [fileName]="exportFileName"></dxo-export>
+      <dxo-sorting mode="none"></dxo-sorting>
+      <dxo-scrolling useNative="false" mode="virtual"></dxo-scrolling>
+      <dxo-paging [enabled]="true" [pageSize]="20"></dxo-paging>
+      <dxo-column-fixing [enabled]="screen.isMobile | async"></dxo-column-fixing>
+      <dxo-editing [mode]="(screen.isDesktop | async) ? 'batch' : 'popup'"
+                   [allowUpdating]="!readOnly"
+                   [allowAdding]="!readOnly"
+                   [allowDeleting]="!readOnly"
+                   [useIcons]="true">
+        <dxo-popup class="field-item-popup"
+                   height="auto"
+                   title="Field Item"
+                   [showTitle]="true"
+                   [showCloseButton]="true"
+                   [closeOnOutsideClick]="true"
+                   [fullScreen]="screen.XSmall | async"
+                   [position]="{my: 'center', at: 'center', of: 'window'}">
+        </dxo-popup>
+        <dxo-form [showColonAfterLabel]="true"
+                  [colCount]="1"
+                  [showValidationSummary]="true"
+                  [screenByWidth]="screen.screenByWidth"
+                  [labelLocation]="(screen.XSmall | async) ? 'top' : 'left'">
+          <dxi-item itemType="group">
+            <dxi-item name="quantity"></dxi-item>
+            <dxi-item name="unitPrice"></dxi-item>
+            <dxi-item name="uom"></dxi-item>
+            <dxi-item name="wbsId"></dxi-item>
+            <dxi-item name="description"></dxi-item>
+          </dxi-item>
+        </dxo-form>
+      </dxo-editing>
+
+      <dxi-column dataField="itemNumber" caption="Item" dataType="number" width="auto" [allowEditing]="false" sortOrder="asc">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+      </dxi-column>
+      <dxi-column dataField="quantity" name="quantity" caption="Quantity" dataType="number" width="auto">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="range" [min]="0"></dxi-validation-rule>
+      </dxi-column>
+      <dxi-column dataField="unitPrice" name="unitPrice" caption="Unit Price" dataType="number" [width]="130">
+        <dxo-form-item name="unitPrice" editorType="dxNumberBox" [editorOptions]="{format:{type:'currency',precision:2}}"></dxo-form-item>
+        <dxo-format type="currency" precision="2"></dxo-format>
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="range" [min]="0"></dxi-validation-rule>
+      </dxi-column>
+      <dxi-column dataField="uom" name="uom" caption="UOM" [width]="150">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxo-lookup [dataSource]="units"></dxo-lookup>
+      </dxi-column>
+      <dxi-column dataField="wbsId" name="wbsId" caption="WBS" [width]="280">
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxo-lookup [dataSource]="wbs"
+                    valueExpr="value"
+                    displayExpr="text">
+        </dxo-lookup>
+      </dxi-column>
+      <dxi-column dataField="description" name="description" caption="Description" [minWidth]="400" [editorOptions]="{ spellcheck: true }">
+        <dxo-form-item name="description" editorType="dxTextArea"></dxo-form-item>
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+      </dxi-column>
+      <dxi-column dataField="isDeleted" caption="Deleted" name="isDeleted" dataType="boolean" [width]="90"></dxi-column>
+      <dxi-column dataField="extendedPrice"
+                  name="extendedPrice"
+                  cssClass="extended-price-column"
+                  caption="Extended Price"
+                  dataType="number"
+                  fixedPosition="right"
+                  [allowEditing]="false"
+                  [fixed]="!(screen.XSmall | async)"
+                  [width]="130"
+                  [calculateCellValue]="calculateExtendedPrice">
+        <dxo-format type="currency" precision="2"></dxo-format>
+      </dxi-column>
+      <dxo-summary [recalculateWhileEditing]="true">
+        <dxi-total-item cssClass="summary-subtotal"
+                        column="Extended Price"
+                        summaryType="sum"
+                        name="extendedPrice"
+                        [valueFormat]="{type: 'currency', precision: 2}"
+                        displayFormat="{0}">
+        </dxi-total-item>
+      </dxo-summary>
+    </dx-data-grid>
+  </div>
+
+  <dx-form [formData]="this"
+           [readOnly]="true"
+           [showColonAfterLabel]="true"
+           [elementAttr]="{ class: 'summary-container' }"
+           [minColWidth]="0"
+           [scrollingEnabled]="true"
+           width="auto"
+           labelLocation="left">
+    <dxo-box [elementAttr]="{ class: 'wtf' }" width="0"></dxo-box>
+    <dxi-item itemType="group" caption="Order Totals" cssClass="summary-group">
+      <dxi-item template="order-field" dataField="gst">
+        <dxo-label text="GST"></dxo-label>
+      </dxi-item>
+      <dxi-item template="order-field" dataField="pst">
+        <dxo-label text="PST"></dxo-label>
+      </dxi-item>
+      <dxi-item template="order-field" dataField="hst">
+        <dxo-label text="HST"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="totalTax" editorType="dxNumberBox"
+                [editorOptions]="{
+                  stylingMode: 'filled',
+                  format: { type:'currency', precision: 2 },
+                  elementAttr: { class: 'summary-field' }
+                }">
+        <dxo-label text="Total Tax"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="totalValueAfterTax" editorType="dxNumberBox"
+                [editorOptions]="{
+                  stylingMode: 'filled',
+                  format: { type:'currency', precision: 2 },
+                  elementAttr: { class: 'summary-field' }
+                }">
+        <dxo-label text="Total (Incl. Tax)"></dxo-label>
+      </dxi-item>
+    </dxi-item>
+
+    <dx-box *dxTemplate="let data of 'order-field'" direction="row" width="100%">
+      <dxi-item [ratio]="0" [shrink]="0" baseSize="auto">
+        <dx-number-box [value]="order[data.dataField]"
+                       [showClearButton]="true"
+                       [showSpinButtons]="true"
+                       [useLargeSpinButtons]="screen.isMobile | async"
+                       [step]="0.01"
+                       (onValueChanged)="updateOrder($event, data.dataField)"
+                       [width]="(screen.isDesktop | async) ? '8em' : '10em'"
+                       stylingMode="underlined">
+          <dxo-format type="percent" [precision]="0"></dxo-format>
+        </dx-number-box>
+      </dxi-item>
+      <dxi-item [ratio]="1" [shrink]="1" baseSize="100%">
+        <dx-number-box [value]="this['total' + data.dataField.charAt(0).toUpperCase() + data.dataField.slice(1)]"
+                       [readOnly]="true"
+                       [elementAttr]="{ class: 'summary-field' }"
+                       stylingMode="filled">
+          <dxo-format type="currency" [precision]="2"></dxo-format>
+        </dx-number-box>
+      </dxi-item>
+    </dx-box>
+
+  </dx-form>
+
+</div>

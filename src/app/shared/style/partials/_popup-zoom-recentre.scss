@@ -1,0 +1,24 @@
+﻿// un-zoom popups so they get sized/positioned correctly, zoom the popup content
+::ng-deep {
+  body.screen-desktop {
+    > .dx-overlay-modal.dx-loadpanel-wrapper,
+    > .dx-overlay-wrapper.fix-overlay-zoom {
+      zoom: calc(100% / 0.9);
+
+      > .dx-overlay-content > .dx-loadpanel-content-wrapper {
+        zoom: 0.9;
+      }
+    }
+
+    > .dx-overlay-modal.dx-popup-wrapper {
+      zoom: calc(100% / 0.9);
+
+      > .dx-overlay-content {
+        > .dx-toolbar > *,
+        > .dx-popup-content > * {
+          zoom: 0.9;
+        }
+      }
+    }
+  }
+}

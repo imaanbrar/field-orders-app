@@ -1,0 +1,75 @@
+$screen-xs: 600px;
+$screen-sm: 960px;
+$screen-md: 1280px;
+$screen-lg: 1920px;
+
+#main-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  > .button-panel {
+    margin: 10px 20px;
+  }
+}
+
+:host ::ng-deep {
+  .widget-container {
+    max-width: 1200px;
+    padding: 20px;
+    float: left;
+  }
+
+  .options {
+    padding: 20px;
+    min-width: 30%;
+    float: left;
+    margin: 20px;
+  }
+
+  .caption {
+    font-size: 18px;
+    font-weight: 500;
+    float: left;
+  }
+}
+
+:host-context(.screen-mobile) {
+  .button-panel {
+    display: none;
+  }
+}
+
+::ng-deep .dx-popup-content .button-bar {
+  margin-top: 10px;
+
+  .ok-button {
+    margin-right: 10px;
+  }
+
+  .dummy-spacer {
+    visibility: hidden;
+  }
+}
+
+.widget-container {
+  width: 100%;
+}
+
+.clearFloat{
+  clear: both;
+}
+
+#saveButton {
+  padding-bottom: 20px;
+  padding-left: 17px;
+}
+
+@media (min-width: $screen-sm + 0.5) {
+  ::ng-deep {
+    .dx-overlay-wrapper.vendor-contact-popup .dx-overlay-content,
+    .dx-overlay-wrapper.vendor-location-popup .dx-overlay-content {
+      max-width: 800px;
+    }
+  }
+}

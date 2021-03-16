@@ -1,0 +1,5 @@
+<ng-container [ngSwitch]="orderType">
+  <field-order-details-controller *ngSwitchCase="'field'" class="break-outer-scrollview"></field-order-details-controller>
+  <div *ngSwitchCase="'material'"></div>
+</ng-container>
+

@@ -1,0 +1,79 @@
+.myBody {
+  padding: 10px;
+  background-color: #ffffff;
+  min-height: 900px;
+}
+
+.dx-card {
+  padding: 10px;
+}
+
+.pageHeading {
+  margin-bottom: 10px;
+  padding: 5px;
+}
+
+:host ::ng-deep {
+
+  tr.dx-row.mobile-row {
+    border-top: 1px solid #dee1e3;
+    border-bottom: 1px solid #dee1e3;
+  }
+
+  .master-detail-info {
+    .master-detail-info dx-box.data-field > .dx-box-item:first-child {
+      margin-right: 10px
+    }
+
+    .data-field-value {
+      padding: 2px;
+    }
+
+    .data-field-label {
+      justify-content: center;
+    }
+
+    .data-field-label label {
+      font: 14px/1 DXIcons;
+      line-height: 1rem;
+      height: .5rem;
+    }
+
+    .data-field-label label::before {
+      float: left;
+    }
+
+    .data-field.order-number .data-field-label label::before {
+      content: "\f009"; /* tag */
+    }
+
+    .data-field.order-name .data-field-label label::before {
+      content: "\f018"; /* box */
+    }
+
+    .data-field.order-company .data-field-label label::before {
+      content: "\f02e"; /* group */
+    }
+
+    .data-field.order-project .data-field-label label::before {
+      content: "\f087"; /* bulletlist */
+    }
+
+    .data-field.order-name-and-status > .dx-box-item:last-child {
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .data-field.order-status {
+      line-height: 1.1em;
+      flex-shrink: 1;
+      flex-grow: 0!important;
+    }
+  }
+
+  .master-detail-buttons {
+    justify-content: center;
+    padding: 0 1em;
+  }
+}
+

@@ -1,0 +1,555 @@
+
+<div *ngIf="loading; else elseBlock">
+  <dx-load-panel [position]="{of: '#tabPanel'}" [visible]="true"></dx-load-panel>
+</div>
+<ng-template #elseBlock>
+  <div id="main-body">
+    <dx-scroll-view width="100%" height="100%" direction="vertical">
+      <div class="widget-container">
+        <dx-form #form
+                 id="form"
+                 [colCount]="1"
+                 [(formData)]="order"
+                 [readOnly]="false"
+                 [screenByWidth]="screen.screenByWidth"
+                 [labelLocation]="(screen.XSmall | async) ? 'top' : 'left'"
+                 [showValidationSummary]="true"
+                 (onFieldDataChanged)="onFormFieldDataChanged($event)">
+          <dxi-item itemType="group" [colSpan]="1" [colCount]="12" width="100%">
+            <dxi-item dataField="project.companyId"
+                      [colSpan]="12"
+                      [isRequired]="true"
+                      template="company-field">
+              <dxo-label text="Client"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="projectId"
+                      [colSpan]="12"
+                      [isRequired]="true"
+                      template="project-field">
+              <dxo-label text="Project"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="number"
+                      [colSpan]="6"
+                      editorType="dxTextBox"
+                      [editorOptions]="{ spellcheck: true, readOnly: true }">
+              <dxi-validation-rule type="required"></dxi-validation-rule>
+              <dxi-validation-rule type="custom"
+                                   [validationCallback]="orderNumberValidationCallback">
+              </dxi-validation-rule>
+              <dxi-validation-rule type="stringLength" max="50" message="Please enter maximum of 50 characters"></dxi-validation-rule>
+              <dxo-label text="Field Order Number"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="name"
+                      [colSpan]="6"
+                      editorType="dxTextBox"
+                      [editorOptions]="{ spellcheck: true }">
+              <dxi-validation-rule type="required"></dxi-validation-rule>
+              <dxi-validation-rule type="stringLength" max="255" message="Please enter maximum of 255 characters"></dxi-validation-rule>
+              <dxo-label text="Field Order Title">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item dataField="statusId"
+                      [colSpan]="6"
+                      editorType="dxSelectBox"
+                      [editorOptions]="{
+                      dataSource: statuses,
+                      valueExpr: 'value',
+                      displayExpr: 'text',
+                      searchEnabled: true
+                    }">
+              <dxi-validation-rule type="required"></dxi-validation-rule>
+              <dxo-label text="Status">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
+            <dxi-item dataField="initiatedDate"
+                      [colSpan]="6"
+                      editorType="dxDateBox"
+                      [editorOptions]="{
+                      invalidDateMessage: 'The date must have the following format: mm/dd/yyyy',
+                      showClearButton: true
+                      }">
+              <dxo-label text="Initiated Date"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="originatorId"
+                      cssClass="originator-field"
+                      [colSpan]="6"
+                      editorType="dxLookup"
+                      [editorOptions]="{
+                        dataSource: contacts,
+                        valueExpr: 'value',
+                        displayExpr: 'text',
+                        searchExpr: 'search',
+                        itemTemplate: 'originatorTemplate',
+                        searchEnabled: true,
+                        showDataBeforeSearch: true,
+                        usePopover: screen.isDesktop | async,
+                        showCancelButton: screen.isMobile | async,
+                        onOptionChanged: onOriginatorOptionChanged,
+                        dropDownOptions: {
+                          title: 'Originator',
+                          deferRendering: false,
+                          closeOnOutsideClick: true,
+                          showTitle: screen.isMobile | async,
+                          fullScreen: screen.XSmall | async,
+                          position: {
+                            my: (screen.isMobile | async) ? 'center' : 'top right',
+                            at: (screen.isMobile | async) ? 'center' : 'bottom right',
+                            of: (screen.isMobile | async) ? 'window' : '.originator-field .dx-lookup-field-wrapper'
+                          }
+                        }
+                      }">
+              <dxo-label text="Originator"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="deliveryPoint"
+                      [colSpan]="6"
+                      editorType="dxTextBox"
+                      [editorOptions]="{ spellcheck: true }">
+              <dxi-validation-rule type="stringLength" max="500" message="Please enter maximum of 500 characters"></dxi-validation-rule>
+              <dxo-label text="Delivery Point">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item dataField="shippingMethodId"
+                      [colSpan]="6"
+                      editorType="dxSelectBox"
+                      [editorOptions]="{
+                        dataSource: shippingMethods,
+                        valueExpr: 'value',
+                        displayExpr: 'text',
+                        searchEnabled: true
+                      }">
+              <dxo-label text="Shipping Method"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="rasDate"
+                      [colSpan]="6"
+                      editorType="dxDateBox"
+                      [editorOptions]="{
+                      invalidDateMessage: 'The date must have the following format: mm/dd/yyyy',
+                      showClearButton: true
+                      }">
+              <dxo-label text="RAS Date"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="goodsReceived"
+                      [colSpan]="6"
+                      editorType="dxDateBox"
+                      [editorOptions]="{
+                      invalidDateMessage: 'The date must have the following format: mm/dd/yyyy',
+                      showClearButton: true
+                      }">
+              <dxo-label text="Goods Received"></dxo-label>
+            </dxi-item>
+            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isMobile | async"></dxi-item>
+            <dxi-item dataField="fieldVendor.companyName"
+                      [colSpan]="6"
+                      editorType="dxAutocomplete"
+                      [editorOptions]="this.order.fieldVendor.autocomplete.companyName.options">
+              <dxi-validation-rule type="stringLength" max="75" message="Please enter maximum of 75 characters"></dxi-validation-rule>
+              <dxi-validation-rule type="custom"
+                                   reevaluate="true"
+                                   message="Vendor name is required if vendor location or vendor contact information is provided"
+                                   [validationCallback]="order.fieldVendor.validateName">
+              </dxi-validation-rule>
+              <dxo-label text="Vendor">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isDesktop | async"></dxi-item>
+            <dxi-item dataField="fieldVendor.location.value"
+                      [colSpan]="6"
+                      editorType="dxTextBox"
+                      [editorOptions]="{
+                        spellcheck: false,
+                        onFocusIn: order.fieldVendor.location.showPopup
+                      }">
+              <dxi-validation-rule type="custom"
+                                   reevaluate="true"
+                                   message="Location address & city are required if vendor contact information is provided"
+                                   [validationCallback]="order.fieldVendor.location.isValid">
+              </dxi-validation-rule>
+              <dxo-label text="Vendor Location">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item dataField="fieldVendor.contact.value"
+                      [colSpan]="6"
+                      editorType="dxTextBox"
+                      [editorOptions]="{
+                        spellcheck: false,
+                        onFocusIn: order.fieldVendor.contact.showPopup
+                      }">
+              <dxi-validation-rule type="custom"
+                                   message="Location address & city are required if vendor contact information is provided"
+                                   [validationCallback]="order.fieldVendor.contact.isValid">
+              </dxi-validation-rule>
+              <dxo-label text="Vendor Contact">
+              </dxo-label>
+            </dxi-item>
+            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isMobile | async"></dxi-item>
+            <dxi-item dataField="readyForPurchase"
+                      [colSpan]="3"
+                      editorType="dxCheckBox">
+              <dxo-label text="Ready For Purchase"></dxo-label>
+            </dxi-item>
+            <dxi-item dataField="issuedToVendor"
+                      [colSpan]="3"
+                      editorType="dxCheckBox">
+              <dxo-label text="Issued To Vendor"></dxo-label>
+            </dxi-item>
+          </dxi-item>
+
+          <lookup-detail-template *dxTemplate="let item of 'originatorTemplate'" [item]="item"></lookup-detail-template>
+
+          <dx-box *dxTemplate="let data of 'company-field'" direction="row" width="100%">
+            <dxi-item [ratio]="1" baseSize="100%">
+              <dx-select-box [dataSource]="companies"
+                             [(value)]="order.project.companyId"
+                             valueExpr="value"
+                             displayExpr="text"
+                             [searchEnabled]="true"
+                             [readOnly]="true"
+                             (onFocusIn)="openClientPopupMobile()">
+                <dx-validator validationGroup="formGroup">
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dx-validator>
+              </dx-select-box>
+            </dxi-item>
+            <dxi-item [ratio]="0" [shrink]="0" baseSize="auto">
+              <dx-button text="View Client"
+                         type="default"
+                         stylingMode="outlined"
+                         [ngStyle]="{'margin-left': '10px'}"
+                         (onClick)="openClientPopup()"
+                         [visible]="screen.isDesktop | async">
+              </dx-button>
+            </dxi-item>
+          </dx-box>
+
+          <dx-box *dxTemplate="let data of 'project-field'" direction="row" width="100%">
+            <dxi-item [ratio]="1" baseSize="100%">
+              <dx-select-box [dataSource]="projects"
+                             [(value)]="order.projectId"
+                             valueExpr="value"
+                             displayExpr="text"
+                             [searchEnabled]="true"
+                             [readOnly]="true"
+                             (onFocusIn)="openProjectMobile()">
+                <dx-validator validationGroup="formGroup">
+                  <dxi-validation-rule type="required"></dxi-validation-rule>
+                </dx-validator>
+              </dx-select-box>
+            </dxi-item>
+            <dxi-item [ratio]="0" [shrink]="0" baseSize="auto">
+              <dx-button text="View Project"
+                         type="default"
+                         stylingMode="outlined"
+                         [ngStyle]="{'margin-left': '10px'}"
+                         (onClick)="openProject()"
+                         [visible]="screen.isDesktop | async">
+              </dx-button>
+            </dxi-item>
+          </dx-box>
+
+        </dx-form>
+      </div>
+      <dx-load-panel #loadPanel
+                     [position]="{ my: 'center', at: 'center' }"
+                     [(visible)]="indicators.savingVisible"
+                     [showIndicator]="true"
+                     [showPane]="true"
+                     message="Saving ..."
+                     [closeOnOutsideClick]="false">
+      </dx-load-panel>
+    </dx-scroll-view>
+    <div class="button-panel">
+      <dx-button type="default"
+                 text="Save"
+                 [disabled]="false || !(dirty | async)"
+                 (onClick)="saveChanges()">
+      </dx-button>
+    </div>
+  </div>
+  <ng-container>
+    <dx-popup #companyPopup
+              [showTitle]="true"
+              [showCloseButton]="true"
+              [closeOnOutsideClick]="true"
+              title="Company"
+              height="50%"
+              width="70%"
+              [fullScreen]="screen.isMobile | async"
+              [(visible)]="popups.companyVisible">
+      <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view>
+          <app-company-popup [companyId]="order.project.companyId" [title]="'Client Info'"></app-company-popup>
+        </dx-scroll-view>
+      </div>
+    </dx-popup>
+    <dx-popup #projectPopup
+              [showTitle]="true"
+              [showCloseButton]="true"
+              [closeOnOutsideClick]="true"
+              title="Project Info"
+              height="40%"
+              width="50%"
+              [fullScreen]="screen.isMobile | async"
+              [(visible)]="popups.projectVisible">
+      <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view height="100%">
+          <app-project-popup [projectId]="order.projectId"></app-project-popup>
+        </dx-scroll-view>
+      </div>
+    </dx-popup>
+    <dx-popup #vendorLocationPopup
+              class="vendor-location-popup"
+              height="auto"
+              width="90%"
+              title="Vendor Location"
+              [showTitle]="true"
+              [showCloseButton]="true"
+              [closeOnOutsideClick]="true"
+              (onHidden)="onPopupClosed()"
+              (onShown)="order.fieldVendor.location.onShown()"
+              (onShowing)="order.fieldVendor.location.onShowing($event)"
+              [fullScreen]="screen.isMobile | async"
+              [(visible)]="order.fieldVendor.location.visible">
+      <dx-box direction="col" height="100%" width="100%">
+        <dxi-item [ratio]="1" baseSize="100%">
+          <dx-form *dxTemplate="let data of 'content'"
+                   #vendorLocation
+                   [scrollingEnabled]="true"
+                   [showValidationSummary]="true"
+                   [readOnly]="false"
+                   [formData]="order.fieldVendor.location"
+                   (onFieldDataChanged)="onFormFieldDataChanged($event)"
+                   [labelLocation]="(screen.XSmall | async) ? 'top' : 'left'"
+                   [screenByWidth]="screen.screenByWidth">
+            <dxi-item itemType="group">
+              <dxi-item dataField="fieldVendor.locationAddress"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationAddress.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="200"
+                                     message="Please enter maximum of 200 characters">
+                </dxi-validation-rule>
+                <dxi-validation-rule type="custom"
+                                     reevaluate="true"
+                                     message="Address is required if contact information is provided"
+                                     [validationCallback]="order.fieldVendor.location.locationAddressValid">
+                </dxi-validation-rule>
+                <dxo-label text="Address"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationCity"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationCity.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="50"
+                                     message="Please enter maximum of 50 characters">
+                </dxi-validation-rule>
+                <dxi-validation-rule type="custom"
+                                     reevaluate="true"
+                                     message="City is required if contact information is provided"
+                                     [validationCallback]="order.fieldVendor.location.locationCityValid">
+                </dxi-validation-rule>
+                <dxo-label text="City"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationState"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationState.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="50"
+                                     message="Please enter maximum of 50 characters"></dxi-validation-rule>
+                <dxo-label text="State"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationCountry"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationCountry.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="50"
+                                     message="Please enter maximum of 50 characters"></dxi-validation-rule>
+                <dxo-label text="Country"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationPostalCode"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationPostalCode.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="15"
+                                     message="Please enter maximum of 15 characters">
+                </dxi-validation-rule>
+                <dxo-label text="Postal Code"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationPhone"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationPhone.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="50"
+                                     message="Please enter maximum of 50 characters">
+                </dxi-validation-rule>
+                <dxo-label text="Phone"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationFax"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationFax.options">
+                <dxi-validation-rule type="stringLength"
+                                     max="50"
+                                     message="Please enter maximum of 50 characters">
+                </dxi-validation-rule>
+                <dxo-label text="Fax"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.locationEmail"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.locationEmail.options">
+                <dxi-validation-rule type="email"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength"
+                                     max="100"
+                                     message="Please enter maximum of 100 characters">
+                </dxi-validation-rule>
+                <dxo-label text="Email"></dxo-label>
+              </dxi-item>
+            </dxi-item>
+
+            <div *dxTemplate="let item of 'locationAddressTemplate'">{{joinItems([item.locationAddress, item.locationCity], ', ')}}</div>
+            <div *dxTemplate="let item of 'locationCityTemplate'">{{joinItems([item.locationCity, item.locationState, item.locationCountry], ', ')}}</div>
+            <div *dxTemplate="let item of 'locationStateTemplate'">{{joinItems([item.locationState, item.locationCountry], ', ')}}</div>
+
+          </dx-form>
+        </dxi-item>
+        <dxi-item class="button-bar" [ratio]="0" [shrink]="0" baseSize="auto" width="100%">
+          <dx-box direction="row" width="100%" >
+            <dxi-item [ratio]="0" [shrink]="0" baseSize="auto">
+              <dx-button width="auto"
+                         type="normal"
+                         stylingMode="outlined"
+                         text="Clear"
+                         [disabled]="false"
+                         (onClick)="order.fieldVendor.location.clearForm()">
+              </dx-button>
+            </dxi-item>
+            <dxi-item [ratio]="1" baseSize="100%" alignment="end">
+              <dx-box direction="row" width="100%" align="end">
+                <dxi-item baseSize="auto">
+                  <dx-button class="ok-button"
+                             type="normal"
+                             stylingMode="outlined"
+                             [text]="!order.readOnly && (screen.isMobile | async) ? 'Save' : 'Ok'"
+                             (onClick)="order.fieldVendor.location.saveEdit()">
+                  </dx-button>
+                </dxi-item>
+                <dxi-item baseSize="auto">
+                  <dx-button type="normal"
+                             text="Cancel"
+                             stylingMode="outlined"
+                             (onClick)="order.fieldVendor.location.cancelEdit()">
+                  </dx-button>
+                </dxi-item>
+              </dx-box>
+            </dxi-item>
+          </dx-box>
+        </dxi-item>
+      </dx-box>
+    </dx-popup>
+    <dx-popup #vendorContactPopup
+              class="vendor-contact-popup"
+              height="auto"
+              width="90%"
+              title="Vendor Contact"
+              [showTitle]="true"
+              [showCloseButton]="true"
+              [closeOnOutsideClick]="true"
+              [fullScreen]="screen.isMobile | async"
+              (onHidden)="onPopupClosed()"
+              (onShown)="order.fieldVendor.contact.onShown()"
+              (onShowing)="order.fieldVendor.contact.onShowing($event)"
+              [(visible)]="order.fieldVendor.contact.visible">
+      <dx-box direction="col" height="100%" width="100%">
+        <dxi-item [ratio]="1" baseSize="100%">
+
+          <dx-form *dxTemplate="let data of 'content'"
+                   #vendorContact
+                   [scrollingEnabled]="true"
+                   [readOnly]="orderMain.readOnly"
+                   [formData]="order.fieldVendor.contact"
+                   [showValidationSummary]="true"
+                   (onFieldDataChanged)="onFormFieldDataChanged($event)"
+                   [labelLocation]="(screen.XSmall | async) ? 'top' : 'left'"
+                   [screenByWidth]="screen.screenByWidth">
+            <dxi-item itemType="group">
+              <dxi-item dataField="fieldVendor.contactFirstName"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactFirstName.options">
+                <dxi-validation-rule type="stringLength" max="20" message="Please enter maximum of 20 characters"></dxi-validation-rule>
+                <dxo-label text="First Name"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.contactLastName"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactLastName.options">
+                <dxi-validation-rule type="stringLength" max="15" message="Please enter maximum of 15 characters"></dxi-validation-rule>
+                <dxo-label text="Last Name"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.contactEmail"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactEmail.options">
+                <dxi-validation-rule type="email"></dxi-validation-rule>
+                <dxi-validation-rule type="stringLength" max="100" message="Please enter maximum of 100 characters"></dxi-validation-rule>
+                <dxo-label text="Email"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.contactPhone"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactPhone.options">
+                <dxi-validation-rule type="stringLength" max="50" message="Please enter maximum of 50 characters"></dxi-validation-rule>
+                <dxo-label text="Phone"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.contactFax"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactFax.options">
+                <dxi-validation-rule type="stringLength" max="50" message="Please enter maximum of 50 characters"></dxi-validation-rule>
+                <dxo-label text="Fax"></dxo-label>
+              </dxi-item>
+              <dxi-item dataField="fieldVendor.contactCell"
+                        editorType="dxAutocomplete"
+                        [editorOptions]="this.order.fieldVendor.autocomplete.contactCell.options">
+                <dxi-validation-rule type="stringLength" max="50" message="Please enter maximum of 50 characters"></dxi-validation-rule>
+                <dxo-label text="Cell"></dxo-label>
+              </dxi-item>
+            </dxi-item>
+
+            <div *dxTemplate="let item of 'contactNameTemplate'">{{joinItems([item.contactFirstName, item.contactLastName], ' ')}}</div>
+
+          </dx-form>
+
+        </dxi-item>
+        <dxi-item class="button-bar" [ratio]="0" [shrink]="0" baseSize="auto" width="100%">
+
+          <dx-box direction="row" width="100%" >
+            <dxi-item [ratio]="0" [shrink]="0" baseSize="auto">
+              <dx-button width="auto"
+                         type="normal"
+                         stylingMode="outlined"
+                         text="Clear"
+                         [disabled]="orderMain.readOnly"
+                         (onClick)="order.fieldVendor.contact.clearForm()">
+              </dx-button>
+            </dxi-item>
+            <dxi-item [ratio]="1" baseSize="100%" alignment="end">
+              <dx-box direction="row" width="100%" align="end">
+                <dxi-item baseSize="auto">
+                  <dx-button class="ok-button"
+                             type="normal"
+                             stylingMode="outlined"
+                             [text]="!order.readOnly && (screen.isMobile | async) ? 'Save' : 'Ok'"
+                             (onClick)="order.fieldVendor.contact.saveEdit()">
+                  </dx-button>
+                </dxi-item>
+                <dxi-item baseSize="auto">
+                  <dx-button type="normal"
+                             stylingMode="outlined"
+                             text="Cancel"
+                             (onClick)="order.fieldVendor.contact.cancelEdit()">
+                  </dx-button>
+                </dxi-item>
+              </dx-box>
+            </dxi-item>
+          </dx-box>
+
+        </dxi-item>
+      </dx-box>
+    </dx-popup>
+  </ng-container>
+</ng-template>

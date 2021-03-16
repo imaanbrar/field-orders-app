@@ -22,9 +22,12 @@
     "@angular/platform-browser": "~11.0.3",
     "@angular/platform-browser-dynamic": "~11.0.3",
     "@angular/router": "~11.0.3",
+    "autobind-decorator": "^2.4.0",
     "devextreme": "^20.2.4",
     "devextreme-angular": "^20.2.4",
+    "devextreme-aspnet-data-nojquery": "^2.8.2",
     "devextreme-schematics": "^1.2.10",
+    "property-watch-decorator": "^1.2.5",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

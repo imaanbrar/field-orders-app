@@ -1,0 +1,147 @@
+$screen-xs: 600px;
+$screen-sm: 960px;
+$screen-md: 1280px;
+$screen-lg: 1920px;
+
+:host {
+  display: block;
+  background-color: #ffffff;
+  min-height: 450px;
+}
+
+:host ::ng-deep {
+  #buttonBar > div.dx-item:last-child {
+    margin-left: auto;
+  }
+}
+
+:host-context(.screen-desktop) {
+  padding: 10px;
+
+  ::ng-deep {
+
+    .dx-tabpanel {
+      display: flex;
+      flex-direction: column;
+      min-height: 300px;
+    }
+
+    .dx-tabpanel-container {
+      padding-top: 0!important;
+      margin-top: 0!important;
+      flex: 1 1 100%;
+      overflow: hidden;
+    }
+
+    .dx-tab .dx-icon {
+      display: none;
+    }
+  }
+}
+
+:host-context(.screen-mobile) {
+  ::ng-deep {
+
+    .button-bar, {
+      padding: 5px;
+    }
+
+    .dx-tabpanel {
+      display: flex;
+      flex-direction: column-reverse;
+      height: 100%;
+
+      .dx-tabs {
+        display: table;
+        table-layout: fixed;
+        border-collapse: collapse;
+        border-width: 0;
+      }
+
+      .dx-tab {
+        width: auto;
+      }
+
+      .dx-tab:not(.dx-tab-selected):not(.dx-state-hover) {
+        background-color: #fafafa;
+      }
+
+      .dx-tabs-wrapper {
+        display: table-row;
+      }
+
+      .dx-tab-selected:before {
+        top: -1px;
+        bottom: 100%;
+        z-index: 2;
+        border-bottom: 1.5px solid #fff;
+      }
+
+      .dx-tabpanel-tabs {
+        flex: 1 0 0;
+      }
+
+      .dx-tabpanel-container {
+        padding-top: 0!important;
+        margin-top: 0!important;
+        flex: 1 1 100%;
+        overflow: hidden;
+      }
+
+      .dx-multiview-wrapper {
+        border-width: 1px 0;
+      }
+    }
+
+    .dx-tab {
+      .dx-tab-content {
+        display: block;
+      }
+
+      .dx-tab-text {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .dx-icon {
+        margin-right: 0;
+        width: 1em;
+        height: 1em;
+        font-size: 31px;
+        line-height: 1em;
+      }
+    }
+  }
+}
+
+.newOrderButton {
+  margin-left: 10px;
+}
+
+.dx-multiview-item-content {
+  max-height: 100%;
+
+  .tabpanel-item {
+    height: 100%;
+
+    > * {
+      max-height: 100%;
+    }
+  }
+}
+
+::ng-deep {
+  .saved-notification .dx-toast-icon {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+@media (min-width: $screen-sm + 0.5) {
+  ::ng-deep {
+    .dx-overlay-wrapper.field-order-info .dx-overlay-content {
+      max-width: 800px;
+    }
+  }
+}

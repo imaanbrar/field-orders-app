@@ -1,0 +1,31 @@
+<dx-box class="myBody"
+        direction="col"
+        width="100%"
+        height="100%">
+  <dxi-item class="dx-card pageHeading"
+            [ratio]="0"
+            [shrink]="0"
+            width="100%"
+            baseSize="auto">
+    <h2 class="content-block">{{heading}}</h2>
+  </dxi-item>
+  <dxi-item class="dx-card responsive-paddings"
+            [ratio]="1"
+            [shrink]="1"
+            baseSize="auto">
+    <dx-accordion #accordion
+                  id="recent-all-accordion"
+                  [dataSource]="tabs"
+                  [animationDuration]="300"
+                  [selectedItems]="[tabs[1]]">
+      <div *dxTemplate="let tab of 'item'">
+        <div *ngIf="tab==='Recent'">
+          <recent-orders [type]="orderType"></recent-orders>
+        </div>
+        <ng-container *ngIf="tab==='All'" [ngSwitch]="orderType">
+          <field-order-list *ngSwitchCase="'field'"></field-order-list>
+        </ng-container>
+      </div>
+    </dx-accordion>
+  </dxi-item>
+</dx-box>

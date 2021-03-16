@@ -1,0 +1,124 @@
+<div style="margin: 10px">
+  <dx-box direction="col" width="100%" height="100%">
+    <dxi-item class="button-bar" [ratio]="0" [shrink]=0 baseSize="auto">
+      <dx-box id="buttonBar" direction="row" width="100%" height="auto" [ngStyle]="{'max-width': '100%'}">
+        <dxi-item [ratio]="0" baseSize="auto">
+          <dx-button type="default" stylingMode="outlined" (onClick)="onClickBackToList()"
+            [icon]="(screen.isMobile | async) ? 'hidepanel' : null"
+            [text]="(screen.isDesktop | async) ? 'Back to List' : null">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [ratio]="0" baseSize="auto">
+          <dx-button type="default" class="newOrderButton" stylingMode="outlined"
+            [icon]="(screen.isMobile | async) ? 'trash' : null"
+            [text]="(screen.isDesktop | async) ? 'Delete Order' : null" [disabled]="!orderSummary.canBeDeleted"
+            (onClick)="onClickDeleteOrder()" hint="Delete Order">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [ratio]="0" baseSize="auto">
+          <dx-button #openOrderButton type="default" class="newOrderButton"
+            [icon]="(screen.isMobile | async) ? 'fas fa-unlock' : null"
+            [text]="(screen.isDesktop | async) ? 'Open Order' : null" [visible]="orderSummary.canBeOpened"
+            stylingMode="outlined" (onClick)="onClickOpenOrder()"
+            hint="Opening the Order will change the Status back to In Progress">
+          </dx-button>
+        </dxi-item>
+        <dxi-item [ratio]="0" baseSize="auto">
+          <dx-button type="default" class="newOrderButton" stylingMode="outlined" hint="Generate Field Order document"
+            text="Generate Document" [icon]="(screen.isMobile | async) ? 'fas fa-file-import' : null"
+            [text]="(screen.isDesktop | async) ? 'Generate Document' : null" (onClick)="generateDoc()"></dx-button>
+        </dxi-item>
+        <dxi-item [ratio]="0" baseSize="auto">
+          <dx-button #infoButton type="default" class="field-order-info-button" stylingMode="outlined"
+            hint="View information about Field Orders" [ngStyle]="{'margin-left': '10px'}"
+            [text]="(screen.isDesktop | async) ? 'Info' : null" [icon]="(screen.isMobile | async) ? 'info' : null"
+            (onClick)="onClickShowInfo()">
+          </dx-button>
+        </dxi-item>
+      </dx-box>
+    </dxi-item>
+    <dxi-item class="details-content" [ratio]="1" baseSize="100%">
+      <field-order-details-summary *ngIf="screen.isDesktop | async" [orderSummary]="orderSummary">
+      </field-order-details-summary>
+      <dx-tab-panel id="tabPanel" [scrollByContent]="true" [dataSource]="tabs" width="100%">
+        <div *dxTemplate="let tab of 'item'">
+          <div class="tabpanel-item" *ngIf="tab.title === 'Main'">
+            <field-order-details-main [orderMain]="order" [setOrderOpen]="setOrderOpen"
+              [setOrderDeleted]="setOrderDeleted" (saved)="onSaved($event)"></field-order-details-main>
+          </div>
+
+          <div class="tabpanel-item" *ngIf="tab.title === 'Items'">
+            <field-order-details-sos [order]="order"></field-order-details-sos>
+          </div>
+
+          <div class="tabpanel-item" *ngIf="tab.title ==='Notes'">
+            <field-order-details-notes [order]="order"></field-order-details-notes>
+          </div>
+
+        </div>
+      </dx-tab-panel>
+    </dxi-item>
+  </dx-box>
+
+  <dx-popup #reportPopup title="Report" [height]="(screen.isMobile | async) ? '100%' : '80%'"
+    [width]="(screen.isMobile | async) ? '100%' : '80%'" [fullScreen]="screen.isMobile | async"
+    [closeOnOutsideClick]="true" [showCloseButton]="true" [(visible)]="popups.report" [deferRendering]="true">
+    <div *dxTemplate="let data of 'content'">
+      <report-document-controller [reportUrl]="reportUrl" [popup]="reportPopup"
+        (onParametersSubmitted)="onReportParametersSubmitted($event)">
+      </report-document-controller>
+    </div>
+  </dx-popup>
+
+  <dx-popup class="field-order-info" height="auto" [width]="(screen.isMobile | async) ? '100%' : '90%'" title=""
+    [showTitle]="true" [showCloseButton]="true" [closeOnOutsideClick]="true" [fullScreen]="screen.isMobile | async"
+    [(visible)]="popups.info">
+    <dx-scroll-view [useNative]="false">
+      <dx-box direction="col" height="100%" width="100%">
+        <dxi-item [ratio]="0" [shrink]="0" baseSize="auto" class="dx-form-group-with-caption">
+          <div class="dx-form-group-caption">Field Orders</div>
+          <p class="dx-form-group-content">Field orders are intended to provide a quick method for purchasing site
+            materials that have a value of less than $5,000.00.</p>
+        </dxi-item>
+        <dxi-item [ratio]="0" [shrink]="0" baseSize="auto" class="dx-form-group-with-caption">
+          <div class="dx-form-group-caption">When to Use a Field Order</div>
+          <p class="dx-form-group-content">A field order <strong>can</strong> be used when:</p>
+          <ul>
+            <li>The value of the material is less than $5,000.00.</li>
+            <li>The purchase is not reoccurring</li>
+            <li>the rental of equipment is less than three months.</li>
+            <li>The appropriate authority has pre-authorized the purchase (e.g., the Construction Manager).</li>
+          </ul>
+        </dxi-item>
+        <dxi-item [ratio]="0" [shrink]="0" baseSize="auto" class="dx-form-group-with-caption">
+          <div class="dx-form-group-caption">When Not to Use a Field Order</div>
+          <p class="dx-form-group-content">A field order <strong>cannot</strong> be used:</p>
+          <ul>
+            <li>When the value of the material is higher than $5,000.00.</li>
+            <li>For any field service required on site.</li>
+            <li>For long term rentals.
+              <ul>
+                <li>Anything over three months will be required to go through the <strong>Planning and Initiation of
+                    Site Services procedure</strong>.</li>
+              </ul>
+            </li>
+            <li>Without engineering approval for items that are engineered (or parts for engineered items).</li>
+            <li>Where warranty may be applicable.</li>
+            <li>When the known value for the purchase is over $5,000.00 but is split into multiple field orders to
+              bypass the limit.
+              <ul>
+                <li>For example, if purchasing 500 widgets @ $15.00 each with a known total value of $7,500.00, this
+                  cannot be split across two separate field orders (one at $5,000.00, and a second at $2,500.00).</li>
+              </ul>
+            </li>
+          </ul>
+          <p class="alert alert-info">
+            For engineering items that are identical (specifications, make, and model) which cost less than $5,000.00,
+            the Construction Manager is responsible to determine if Engineering's input is required prior to making any
+            commitments.
+          </p>
+        </dxi-item>
+      </dx-box>
+    </dx-scroll-view>
+  </dx-popup>
+</div>

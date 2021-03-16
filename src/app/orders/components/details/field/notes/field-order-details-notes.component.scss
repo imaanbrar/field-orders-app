@@ -1,0 +1,44 @@
+#comments {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .widget-container {
+    max-height: 100%;
+  }
+}
+
+:host ::ng-deep {
+  dx-data-grid {
+
+    // fixed column edit & delete button spacing
+    .dx-datagrid .dx-datagrid-table-fixed .dx-row .dx-link:first-child:not(:last-child) {
+      margin: 0 0.5em 0 0.25em;
+    }
+
+    .dx-datagrid .dx-datagrid-table-fixed .dx-row .dx-link:last-child:not(:first-child) {
+      margin: 0 0.25em 0 0.5em;
+    }
+  }
+
+}
+
+:host-context(.screen-mobile) {
+  .widget-container {
+    height: 100%;
+  }
+}
+
+::ng-deep {
+  .rmNotes {
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .caption {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 5px;
+  }
+}
