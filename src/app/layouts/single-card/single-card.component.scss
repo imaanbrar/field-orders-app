@@ -7,17 +7,17 @@
 
 .single-card {
   .dx-card {
-    width: 330px;
+    width: 310px;
     margin: auto auto;
     padding: 40px;
     flex-grow: 0;
 
     :host-context(.screen-x-small) & {
-      width: 100%;
+      width: 90%;
       height: 100%;
       border-radius: 0;
       box-shadow: none;
-      margin: 0;
+      margin: 10;
       border: 0;
       flex-grow: 1;
     }
@@ -27,14 +27,14 @@
 
       .title {
         color: $base-text-color;
-        line-height: 28px;
+        line-height: 18px;
         font-weight: 500;
-        font-size: 24px;
+        font-size: 34px;
       }
 
       .description {
         color: rgba($base-text-color, alpha($base-text-color) * 0.7);
-        line-height: 18px;
+        line-height: 13px;
       }
     }
   }
