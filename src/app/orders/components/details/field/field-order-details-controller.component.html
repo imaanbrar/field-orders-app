@@ -11,7 +11,7 @@
         <dxi-item [ratio]="0" baseSize="auto">
           <dx-button type="default" class="newOrderButton" stylingMode="outlined"
             [icon]="(screen.isMobile | async) ? 'trash' : null"
-            [text]="(screen.isDesktop | async) ? 'Delete Order' : null" [disabled]="!orderSummary.canBeDeleted"
+            [text]="(screen.isDesktop | async) ? 'Delete Order' : null"
             (onClick)="onClickDeleteOrder()" hint="Delete Order">
           </dx-button>
         </dxi-item>
@@ -22,11 +22,6 @@
             stylingMode="outlined" (onClick)="onClickOpenOrder()"
             hint="Opening the Order will change the Status back to In Progress">
           </dx-button>
-        </dxi-item>
-        <dxi-item [ratio]="0" baseSize="auto">
-          <dx-button type="default" class="newOrderButton" stylingMode="outlined" hint="Generate Field Order document"
-            text="Generate Document" [icon]="(screen.isMobile | async) ? 'fas fa-file-import' : null"
-            [text]="(screen.isDesktop | async) ? 'Generate Document' : null" (onClick)="generateDoc()"></dx-button>
         </dxi-item>
         <dxi-item [ratio]="0" baseSize="auto">
           <dx-button #infoButton type="default" class="field-order-info-button" stylingMode="outlined"

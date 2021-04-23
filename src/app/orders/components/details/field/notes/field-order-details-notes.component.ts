@@ -92,7 +92,6 @@ export class FieldOrderDetailsNotesComponent implements OnInit, OnDestroy {
 
     e.toolbarOptions.items.unshift({
       location    : 'before',
-      disabled    : this.order.readOnly,
       widget      : 'dxButton',
       locateInMenu: isDesktop ? 'auto' : 'always',
       options     : {
@@ -129,7 +128,8 @@ export class FieldOrderDetailsNotesComponent implements OnInit, OnDestroy {
   newRowEvent(e) {
     e.data.orderId       = this.order.id;
     e.data.commentDate   = new Date();
-    e.data.createdBy     = this.loggedInUser.id;
+    //e.data.createdBy     = this.loggedInUser.id;
+    e.data.createdBy     = 1;
 
     const { component } = e;
 
@@ -196,7 +196,7 @@ export class FieldOrderDetailsNotesComponent implements OnInit, OnDestroy {
 
   @autobind
   isDirty(): boolean {
-    return this.dataGrid.instance && this.dataGrid.instance.hasEditData();
+    return false;
   }
 
   setDirty(): void {

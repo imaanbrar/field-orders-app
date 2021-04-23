@@ -170,4 +170,16 @@
 
   </dx-form>
 
-</div>
+  <dx-popup #excelImportPopup
+            [showTitle]="true"
+            [width]="700"
+            [height]="450"
+            title="Import From Excel"
+            [dragEnabled]="false"
+            [closeOnOutsideClick]="true"
+            (visible)="false">
+    <div *dxTemplate="let data of 'content'">
+      <app-excel-import></app-excel-import>
+      <input type="file" style="display: inline-block;" (change)="incomingfile($event)" onclick="this.value=null;" placeholder="Upload file" accept=".xlsx">
+    </div>
+  </dx-popup></div>

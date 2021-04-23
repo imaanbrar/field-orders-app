@@ -1,59 +1,59 @@
 :host {
   width: 100%;
-  height: 100%;
+  height: 100%;}
 
-  ::ng-deep #recent-all-accordion {
-    max-height: 100%;
+//   ::ng-deep #recent-all-accordion {
+//     max-height: 100%;
 
-    > .dx-accordion-wrapper {
-      height: 100%;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-    }
+//     > .dx-accordion-wrapper {
+//       height: 100%;
+//       width: 100%;
+//       display: flex;
+//       flex-direction: column;
+//     }
 
-    .dx-accordion-item {
-      display: flex;
-      flex-direction: column;
-    }
+//     .dx-accordion-item {
+//       display: flex;
+//       flex-direction: column;
+//     }
 
-    .dx-accordion-item:first-child {
-      flex: 1 0 auto;
-    }
+//     .dx-accordion-item:first-child {
+//       flex: 1 0 auto;
+//     }
 
-    .dx-accordion-item:last-child > div {
-      flex: 1 1 auto;
-    }
+//     .dx-accordion-item:last-child > div {
+//       flex: 1 1 auto;
+//     }
 
-    .dx-accordion-item:last-child > .dx-accordion-item-body {
-      height: 100%;
-    }
+//     .dx-accordion-item:last-child > .dx-accordion-item-body {
+//       height: 100%;
+//     }
 
-  }
+//   }
 
-  ::ng-deep .dx-datagrid-header-panel {
-    .dx-toolbar-items-container {
-      display: flex;
-    }
+//   ::ng-deep .dx-datagrid-header-panel {
+//     .dx-toolbar-items-container {
+//       display: flex;
+//     }
 
-    .dx-toolbar-before {
-      flex: 1 0 auto;
-      position: relative;
-      padding-right: 0;
-    }
+//     .dx-toolbar-before {
+//       flex: 1 0 auto;
+//       position: relative;
+//       padding-right: 0;
+//     }
 
-    .dx-toolbar-after {
-      flex: 0 1 auto;
-      position: relative;
-    }
+//     .dx-toolbar-after {
+//       flex: 0 1 auto;
+//       position: relative;
+//     }
 
-    .dx-toolbar-after .dx-datagrid-search-panel {
-      max-width: 240px;
-      min-width: 100px;
-      margin-left: 0;
-    }
-  }
-}
+//     .dx-toolbar-after .dx-datagrid-search-panel {
+//       max-width: 240px;
+//       min-width: 100px;
+//       margin-left: 0;
+//     }
+//   }
+// }
 
 .myBody {
   padding: 10px;

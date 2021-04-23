@@ -23,9 +23,9 @@
                         placeholder="Search..."></dxo-search-panel>
       <dxo-column-fixing [enabled]="screen.isMobile | async"></dxo-column-fixing>
       <dxo-editing [mode]="(screen.isDesktop | async) ? 'batch' : 'popup'"
-                   [allowUpdating]="!order.readOnly"
-                   [allowAdding]="!order.readOnly"
-                   [allowDeleting]="!order.readOnly"
+                   [allowUpdating]="true"
+                   [allowAdding]="true"
+                   [allowDeleting]="true"
                    [useIcons]="true"
                    [popup]="{
                     onShown: onPopupShown

@@ -62,8 +62,6 @@ export class FieldOrderDetailsMainComponent implements OnInit, OnDestroy, AfterC
   statuses: CustomStore;
   shippingMethods: CustomStore;
 
-  contacts: DataSource;
-
   loading: boolean = true;
 
   dirtyFields: string[] = [];
@@ -280,7 +278,8 @@ export class FieldOrderDetailsMainComponent implements OnInit, OnDestroy, AfterC
 
   save() {
     this.showSavingIndicator();
-    this.order.modifiedBy = this.loggedInUser.id;
+    //this.order.modifiedBy = this.loggedInUser.id;
+    this.order.modifiedBy = 1;
 
     this.notify({
       message        : 'Saving...',
@@ -336,26 +335,17 @@ export class FieldOrderDetailsMainComponent implements OnInit, OnDestroy, AfterC
   protected createStores() {
     this.companies = AspNetData.createStore({
       key    : "value",
-      loadUrl: this.endpoints.api.Lookups.GetClientsLookup(),
+      loadUrl: this.endpoints.api.Lookups.GetClientsAsLookup(),
     });
 
     this.projects = AspNetData.createStore({
       key    : "value",
-      loadUrl: this.endpoints.api.Projects.GetAccessibleProjectsAsLookup(),
+      loadUrl: this.endpoints.api.Lookups.GetProjectsAsLookup(),
     });
 
     this.statuses = AspNetData.createStore({
       key    : "value",
       loadUrl: this.endpoints.api.Lookups.GetOrderStatusAsLookup(),
-    });
-
-    this.contacts = new DataSource({
-      sort : [ { selector: 'search', desc: false } ],
-      store: AspNetData.createStore({
-        key    : "value",
-        loadParams: { orderId: this.orderId },
-        loadUrl: this.endpoints.api.Lookups.GetFieldOrderOriginatorNamesLookup(),
-      })
     });
 
     this.shippingMethods = AspNetData.createStore({

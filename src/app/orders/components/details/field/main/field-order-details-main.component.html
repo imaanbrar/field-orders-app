@@ -61,7 +61,6 @@
               <dxo-label text="Status">
               </dxo-label>
             </dxi-item>
-            <dxi-item itemType="empty" [colSpan]="6"></dxi-item>
             <dxi-item dataField="initiatedDate"
                       [colSpan]="6"
                       editorType="dxDateBox"
@@ -70,36 +69,6 @@
                       showClearButton: true
                       }">
               <dxo-label text="Initiated Date"></dxo-label>
-            </dxi-item>
-            <dxi-item dataField="originatorId"
-                      cssClass="originator-field"
-                      [colSpan]="6"
-                      editorType="dxLookup"
-                      [editorOptions]="{
-                        dataSource: contacts,
-                        valueExpr: 'value',
-                        displayExpr: 'text',
-                        searchExpr: 'search',
-                        itemTemplate: 'originatorTemplate',
-                        searchEnabled: true,
-                        showDataBeforeSearch: true,
-                        usePopover: screen.isDesktop | async,
-                        showCancelButton: screen.isMobile | async,
-                        onOptionChanged: onOriginatorOptionChanged,
-                        dropDownOptions: {
-                          title: 'Originator',
-                          deferRendering: false,
-                          closeOnOutsideClick: true,
-                          showTitle: screen.isMobile | async,
-                          fullScreen: screen.XSmall | async,
-                          position: {
-                            my: (screen.isMobile | async) ? 'center' : 'top right',
-                            at: (screen.isMobile | async) ? 'center' : 'bottom right',
-                            of: (screen.isMobile | async) ? 'window' : '.originator-field .dx-lookup-field-wrapper'
-                          }
-                        }
-                      }">
-              <dxo-label text="Originator"></dxo-label>
             </dxi-item>
             <dxi-item dataField="deliveryPoint"
                       [colSpan]="6"
@@ -138,7 +107,6 @@
                       }">
               <dxo-label text="Goods Received"></dxo-label>
             </dxi-item>
-            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isMobile | async"></dxi-item>
             <dxi-item dataField="fieldVendor.companyName"
                       [colSpan]="6"
                       editorType="dxAutocomplete"
@@ -152,7 +120,6 @@
               <dxo-label text="Vendor">
               </dxo-label>
             </dxi-item>
-            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isDesktop | async"></dxi-item>
             <dxi-item dataField="fieldVendor.location.value"
                       [colSpan]="6"
                       editorType="dxTextBox"
@@ -182,7 +149,6 @@
               <dxo-label text="Vendor Contact">
               </dxo-label>
             </dxi-item>
-            <dxi-item itemType="empty" [colSpan]="6" [visible]="screen.isMobile | async"></dxi-item>
             <dxi-item dataField="readyForPurchase"
                       [colSpan]="3"
                       editorType="dxCheckBox">
@@ -464,7 +430,6 @@
           <dx-form *dxTemplate="let data of 'content'"
                    #vendorContact
                    [scrollingEnabled]="true"
-                   [readOnly]="orderMain.readOnly"
                    [formData]="order.fieldVendor.contact"
                    [showValidationSummary]="true"
                    (onFieldDataChanged)="onFormFieldDataChanged($event)"

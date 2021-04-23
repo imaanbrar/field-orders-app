@@ -1,32 +1,32 @@
-import { formatCurrency }                                 from "@angular/common";
+import { formatCurrency } from "@angular/common";
 import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { LoggedInUser }                                   from "@app/shared/models/LoggedInUser";
-import { ApiEndpointService }                             from "@app/shared/services/api-endpoint.service";
-import { EditorStateService }                             from "@app/shared/services/editor-state.service";
-import { NotificationService }                            from "@app/shared/services/notification.service";
-import { UserService }                                    from "@app/shared/services/user.service";
-import { ScreenService }                                  from "@app/shared/services";
-import { getValueMapFromLookup }                          from "@app/shared/utils/getValueMapFromLookup";
-import { swapGridCells }                                  from "@app/shared/utils/swapGridCells";
-import { FieldItem }                                      from "@orders/models/field/field-item";
-import { FieldOrder }                                     from "@orders/models/field/field-order";
-import { OrderService }                                   from "@orders/services/order.service";
-import autobind                                           from "autobind-decorator";
-import { DxDataGridComponent }                            from "devextreme-angular";
-import * as AspNetData                                    from "devextreme-aspnet-data-nojquery";
-import CustomStore                                        from "devextreme/data/custom_store";
-import { alert }                                          from "devextreme/ui/dialog";
-import notify                                             from "devextreme/ui/notify";
-import { OnChange }                                       from "property-watch-decorator";
-import { Subject }               from "rxjs";
+import { LoggedInUser } from "@app/shared/models/LoggedInUser";
+import { ApiEndpointService } from "@app/shared/services/api-endpoint.service";
+import { EditorStateService } from "@app/shared/services/editor-state.service";
+import { NotificationService } from "@app/shared/services/notification.service";
+import { UserService } from "@app/shared/services/user.service";
+import { ScreenService } from "@app/shared/services";
+import { getValueMapFromLookup } from "@app/shared/utils/getValueMapFromLookup";
+import { swapGridCells } from "@app/shared/utils/swapGridCells";
+import { FieldItem } from "@orders/models/field/field-item";
+import { FieldOrder } from "@orders/models/field/field-order";
+import { OrderService } from "@orders/services/order.service";
+import autobind from "autobind-decorator";
+import { DxDataGridComponent, DxPopupComponent } from "devextreme-angular";
+import * as AspNetData from "devextreme-aspnet-data-nojquery";
+import CustomStore from "devextreme/data/custom_store";
+import { alert } from "devextreme/ui/dialog";
+import notify from "devextreme/ui/notify";
+import { OnChange } from "property-watch-decorator";
+import { Subject } from "rxjs";
 import { map, retry, takeUntil } from "rxjs/operators";
 import IFieldItem = FieldItem.IFieldItem;
 import Notifier = NotificationService.Notifier;
 
 @Component({
-  selector   : 'field-order-details-sos',
+  selector: 'field-order-details-sos',
   templateUrl: './field-order-details-sos.component.html',
-  styleUrls  : [ './field-order-details-sos.component.scss' ]
+  styleUrls: ['./field-order-details-sos.component.scss']
 })
 export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
 
@@ -46,6 +46,7 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
   popups = {
     excelImportVisible: false
   };
+  @ViewChild("excelImportPopup") excelImportPopup: DxPopupComponent;
 
   loggedInUser: LoggedInUser;
 
@@ -71,19 +72,19 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
     this.loggedInUser = UserService.loggedInUser;
 
     this.notify = notification.getNotifier({
-        position : {
-          my       : 'right top',
-          at       : 'right top',
-          of       : window,
-          boundary : '#buttonBar',
-          collision: { x: 'fit', y: 'fit' }
-        },
-        animation: NotificationService.Animation.slide(
-          { my: 'left top', at: 'right top' },
-          { my: 'right top', at: 'right top' },
-          '#buttonBar'
-        )
+      position: {
+        my: 'right top',
+        at: 'right top',
+        of: window,
+        boundary: '#buttonBar',
+        collision: { x: 'fit', y: 'fit' }
       },
+      animation: NotificationService.Animation.slide(
+        { my: 'left top', at: 'right top' },
+        { my: 'right top', at: 'right top' },
+        '#buttonBar'
+      )
+    },
       screen.isMobile.pipe(takeUntil(this.destroyed))
     );
   }
@@ -93,7 +94,7 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
   }
 
   get exportFileName(): string {
-    return `[${ this.order.number }] ${ this.order.name } - Items`;
+    return `[${this.order.number}] ${this.order.name} - Items`;
   }
 
   get totalPriceSummaryFunction(): () => number {
@@ -194,49 +195,49 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
     const isDesktop = !isMobile;
 
     e.toolbarOptions.items.unshift({
-      location    : 'before',
-      widget      : 'dxButton',
+      location: 'before',
+      widget: 'dxButton',
       locateInMenu: isDesktop ? 'auto' : 'always',
-      options     : {
-        text    : 'Reset Item Numbers',
+      options: {
+        text: 'Reset Item Numbers',
         disabled: this.readOnly,
-        hint    : 'Reset Item Numbers based on current item ordering',
-        onClick : this.setItemNumbers
+        hint: 'Reset Item Numbers based on current item ordering',
+        onClick: this.setItemNumbers
       }
     });
     e.toolbarOptions.items.unshift({
-      location    : 'before',
-      widget      : 'dxButton',
+      location: 'before',
+      widget: 'dxButton',
       locateInMenu: isXSmall ? 'always' : 'auto',
-      showText    : isMobile ? 'always' : 'inMenu',
-      options     : {
-        icon    : 'arrowdown',
+      showText: isMobile ? 'always' : 'inMenu',
+      options: {
+        icon: 'arrowdown',
         disabled: this.readOnly,
-        hint    : 'Move Down',
-        text    : 'Move Down',
-        onClick : this.moveDown
+        hint: 'Move Down',
+        text: 'Move Down',
+        onClick: this.moveDown
       }
     });
     e.toolbarOptions.items.unshift({
-      location    : 'before',
-      widget      : 'dxButton',
+      location: 'before',
+      widget: 'dxButton',
       locateInMenu: isXSmall ? 'always' : 'auto',
-      showText    : isMobile ? 'always' : 'inMenu',
-      options     : {
-        icon    : 'arrowup',
+      showText: isMobile ? 'always' : 'inMenu',
+      options: {
+        icon: 'arrowup',
         disabled: this.readOnly,
-        hint    : 'Move Up',
-        text    : 'Move Up',
-        onClick : this.moveUp
+        hint: 'Move Up',
+        text: 'Move Up',
+        onClick: this.moveUp
       }
     });
     e.toolbarOptions.items.unshift({
-      location    : 'before',
+      location: 'before',
       locateInMenu: isDesktop ? 'auto' : 'always',
-      disabled    : this.readOnly,
-      widget      : 'dxButton',
-      options     : {
-        text   : 'Import From Excel',
+      disabled: this.readOnly,
+      widget: 'dxButton',
+      options: {
+        text: 'Import From Excel',
         onClick: this.showImport
       }
     });
@@ -304,16 +305,21 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
   @autobind
   showImport() {
     this.popups.excelImportVisible = true;
+    this.excelImportPopup.visible = true;
   }
 
   @autobind
   importDataAdded() {
     this.popups.excelImportVisible = false;
+    this.excelImportPopup.visible = false;
   }
 
   @autobind
   isDirty(): boolean {
-    return this.dataGrid.instance && this.dataGrid.instance.hasEditData();
+    if (this.dataGrid && this.dataGrid.instance)
+      return true;
+    else
+      return false;
   }
 
   setDirty(): void {
@@ -354,7 +360,7 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
           const $limit = formatCurrency(limit, 'en-US', '$');
           const message = `
 <div class="alert alert-warning">
-    <p>The items you are entering will bring the subtotal to <strong>${ $subtotal }</strong> which exceeds the <strong>${ $limit }</strong> limit on <strong>Field Orders</strong>.</p>
+    <p>The items you are entering will bring the subtotal to <strong>${$subtotal}</strong> which exceeds the <strong>${$limit}</strong> limit on <strong>Field Orders</strong>.</p>
 </div>
 <div class="alert alert-info">
     <p>If you require a higher limit you should create a <strong>Purchase Order</strong> instead.</p>
@@ -374,23 +380,23 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
 
   saveOrder() {
     this.notify({
-      message        : 'Saving...',
-      elementAttr    : { class: 'notification-service-toast simple-custom-toast' },
+      message: 'Saving...',
+      elementAttr: { class: 'notification-service-toast simple-custom-toast' },
       contentTemplate: `<i class="fas fa-spinner fa-pulse"></i>`
     }, 'custom', 60000).then();
 
     this._service.updateOrder(this.order.id, this.order)
-        .pipe(retry(2))
-        .subscribe({
-          next: () => {
-            this.order.save();
-            this.notify('All changes saved', 'success', 5000).then(() => this.notification.skipToLast());
-          },
-          error: (error) => {
-            this.notify(`Error: ${ error }`, 'error', 5000).then(() => this.notification.skipToLast());
-            console.warn({ ['saving error']: error });
-          }
-        });
+      .pipe(retry(2))
+      .subscribe({
+        next: () => {
+          this.order.save();
+          this.notify('All changes saved', 'success', 5000).then(() => this.notification.skipToLast());
+        },
+        error: (error) => {
+          this.notify(`Error: ${error}`, 'error', 5000).then(() => this.notification.skipToLast());
+          console.warn({ ['saving error']: error });
+        }
+      });
   }
 
   onSaving(e) {
@@ -402,8 +408,8 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
     }
 
     this.notify({
-      message        : 'Saving...',
-      elementAttr    : { class: 'notification-service-toast simple-custom-toast' },
+      message: 'Saving...',
+      elementAttr: { class: 'notification-service-toast simple-custom-toast' },
       contentTemplate: `<i class="fas fa-spinner fa-pulse"></i>`
     }, 'custom', 60000).then();
   }
@@ -415,7 +421,7 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
       this.notify('All changes saved', 'success', 5000).then(() => this.notification.skipToLast());
     } else {
       // I'm unsure what an error here would likely be. API errors are handled in onDataErrorOccurred
-      this.notify(`Error: ${ error.message }`, 'error', 5000).then(() => this.notification.skipToLast());
+      this.notify(`Error: ${error.message}`, 'error', 5000).then(() => this.notification.skipToLast());
       console.warn({ ['saving error']: error });
     }
   }
@@ -428,10 +434,10 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
 
   createLookups() {
     this.wbs = AspNetData.createStore({
-      key       : "value",
-      loadUrl   : this.endpoints.api.ProjectWbs.GetProjectWBSAsLookup(),
+      key: "value",
+      loadUrl: this.endpoints.api.Lookups.GetProjectWBSAsLookup(),
       loadParams: { projectId: this.order.projectId },
-      onLoaded  : (loaded: any[]) => {
+      onLoaded: (loaded: any[]) => {
         FieldItem.wbs = getValueMapFromLookup(loaded);
       }
     });
@@ -441,12 +447,12 @@ export class FieldOrderDetailsSosComponent implements OnInit, OnDestroy {
 
   createStores() {
     this.dataSource = AspNetData.createStore({
-      key       : "id",
-      loadUrl   : this.endpoints.api.OrderItems.GetOrderItemByOrderID(),
+      key: "id",
+      loadUrl: this.endpoints.api.OrderItems.GetOrderItemByOrderID(),
       loadParams: { id: this.order.id },
-      insertUrl : this.endpoints.api.OrderItems.PostOrderItem(),
-      updateUrl : this.endpoints.api.OrderItems.PutOrderItem(),
-      deleteUrl : this.endpoints.api.OrderItems.DeleteOrderItemPretend(),
+      insertUrl: this.endpoints.api.OrderItems.PostOrderItem(),
+      updateUrl: this.endpoints.api.OrderItems.PutOrderItem(),
+      deleteUrl: this.endpoints.api.OrderItems.DeleteOrderItemPretend(),
     });
   }
 
